@@ -1,0 +1,14 @@
+env: "local"
+minio:
+  host: "minio"
+  port: "9000"
+  access_key: "admin_key"
+  secret_access_key: "not_really_a_secret"
+  ssl_mode: false
+  base_bucket: "files_bucket"
+  base_path: "/files/"
+
+server:
+  address: ":8080"
+  timeout: 4s
+  idle_timeout: 60s
