@@ -1,0 +1,119 @@
+basePath: /api/v1
+definitions:
+  internal_rest.FileContentResponse:
+    properties:
+      content:
+        type: string
+    type: object
+  internal_rest.FileNamesResponse:
+    properties:
+      names:
+        items:
+          type: string
+        type: array
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample swagger for docker compose training project
+  title: S3 compatible storage API
+  version: "1.0"
+paths:
+  /storage:
+    get:
+      consumes:
+      - application/json
+      description: get names of all uploaded files
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_rest.FileNamesResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get names
+      tags:
+      - files
+    post:
+      consumes:
+      - application/json
+      description: uploads file
+      parameters:
+      - description: Files
+        in: formData
+        name: input
+        required: true
+        type: file
+      - description: name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Uploads file
+      tags:
+      - files
+  /storage/{name}:
+    delete:
+      consumes:
+      - application/json
+      description: remove existing file from storage
+      parameters:
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Remove file
+      tags:
+      - files
+  /storage/{name}/content:
+    get:
+      consumes:
+      - application/json
+      description: get text content of the file
+      parameters:
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_rest.FileContentResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get content
+      tags:
+      - files
+swagger: "2.0"
