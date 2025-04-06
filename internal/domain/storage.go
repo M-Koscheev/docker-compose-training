@@ -4,7 +4,16 @@ import (
 	"context"
 	"docker-compose-training/internal/repository"
 	"fmt"
+	"github.com/minio/minio-go"
 	"sync"
+)
+
+const (
+	errMessage = "file with given name does not exist"
+)
+
+var (
+	NoObjectErr = minio.ErrInvalidObjectName(errMessage)
 )
 
 type StorageService struct {
@@ -75,22 +84,48 @@ func (s *StorageService) GetFilesList(ctx context.Context) ([]string, error) {
 }
 
 func (s *StorageService) GetFileContent(ctx context.Context, name string) (FileContent, error) {
-	file, err := s.repo.GetFile(ctx, name)
+	names, err := s.GetFilesList(ctx)
 	if err != nil {
-		return FileContent{}, fmt.Errorf("failed to get file from minio: %w", err)
+		return FileContent{}, fmt.Errorf("failed to get files list: %w", err)
 	}
 
-	var contentBytes []byte
-	bytesRead, err := file.Read(contentBytes)
-	if err != nil {
-		return FileContent{}, fmt.Errorf("failed to read file content, with %v bytes read: %w", bytesRead, err)
+	found := false
+	for _, curName := range names {
+		if curName == name {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return FileContent{}, NoObjectErr
 	}
 
-	return FileContent{Content: string(contentBytes)}, nil
+	content, err := s.repo.GetFileContent(ctx, name)
+	if err != nil {
+		return FileContent{}, fmt.Errorf("failed to get file %s content: %w", name, err)
+	}
+
+	return FileContent{Content: content}, nil
 }
 
 func (s *StorageService) RemoveFile(ctx context.Context, name string) error {
-	err := s.repo.RemoveFile(ctx, name)
+	names, err := s.GetFilesList(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get files list: %w", err)
+	}
+
+	found := false
+	for _, curName := range names {
+		if curName == name {
+			found = true
+			break
+		}
+	}
+	if !found {
+		return NoObjectErr
+	}
+
+	err = s.repo.RemoveFile(ctx, name)
 	if err != nil {
 		return fmt.Errorf("failed to remove file from minio: %w", err)
 	}
