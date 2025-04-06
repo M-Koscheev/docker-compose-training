@@ -2,11 +2,11 @@ env: "local"
 minio:
   host: "minio"
   port: "9000"
-  access_key: "admin_key"
-  secret_access_key: "not_really_a_secret"
+  access_key: "admin"
+  secret_access_key: "qwerty_password"
   ssl_mode: false
-  base_bucket: "files_bucket"
-  base_path: "/files/"
+  base_bucket: "files.bucket"
+  base_path: "./tmp/"
 
 server:
   address: ":8080"
