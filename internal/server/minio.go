@@ -4,6 +4,7 @@ import (
 	"docker-compose-training/config"
 	"fmt"
 	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/pkg/credentials"
 	"log/slog"
 )
 
@@ -14,7 +15,10 @@ func NewMinioClient(bucketName string, cfg config.Minio) (*minio.Client, error) 
 	useSSL := *cfg.SSLMode
 
 	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+	minioClient, err := minio.NewWithOptions(endpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+		Secure: useSSL,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize minio client: %w", err)
 	}

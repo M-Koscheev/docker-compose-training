@@ -28,7 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	minioClient, err := server.NewMinioClient("files_bucket", cfg.Minio)
+	minioClient, err := server.NewMinioClient(cfg.Minio.BaseBucket, cfg.Minio)
 	if err != nil {
 		slog.Error("failed to setup minio", "error", err)
 		panic(err)
@@ -36,7 +36,7 @@ func main() {
 
 	repositoryVar := repository.NewRepository(minioClient, cfg.Minio.BaseBucket, cfg.Minio.BasePath)
 	servicesVar := domain.NewService(repositoryVar)
-	handlersVar := rest.NewHandler(servicesVar)
+	handlersVar := rest.NewHandler(servicesVar, cfg.Minio.BasePath)
 
 	srv := server.Server{}
 	exit := make(chan os.Signal, 1)
@@ -47,6 +47,7 @@ func main() {
 		}
 	}()
 
+	slog.Info("server started")
 	signal.Notify(exit, syscall.SIGTERM, syscall.SIGINT)
 	<-exit
 
