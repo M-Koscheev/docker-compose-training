@@ -150,7 +150,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal_rest.FileContentResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -164,14 +164,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "internal_rest.FileContentResponse": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                }
-            }
-        },
         "internal_rest.FileNamesResponse": {
             "type": "object",
             "properties": {

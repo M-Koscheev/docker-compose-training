@@ -18,6 +18,6 @@ func NewRepository(minioClient *minio.Client, bucketName, basePath string) *Repo
 type Storage interface {
 	PostFile(ctx context.Context, fileName string) error
 	GetFilesList(ctx context.Context) ([]string, error)
-	GetFile(ctx context.Context, name string) (*minio.Object, error)
+	GetFileContent(ctx context.Context, name string) (string, error)
 	RemoveFile(ctx context.Context, name string) error
 }

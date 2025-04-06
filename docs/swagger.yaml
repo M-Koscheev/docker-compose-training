@@ -1,10 +1,5 @@
 basePath: /api/v1
 definitions:
-  internal_rest.FileContentResponse:
-    properties:
-      content:
-        type: string
-    type: object
   internal_rest.FileNamesResponse:
     properties:
       names:
@@ -108,7 +103,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal_rest.FileContentResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
