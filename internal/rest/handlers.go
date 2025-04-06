@@ -8,10 +8,11 @@ import (
 
 type Handler struct {
 	Services *domain.Service
+	basePath string
 }
 
-func NewHandler(services *domain.Service) *Handler {
-	return &Handler{Services: services}
+func NewHandler(services *domain.Service, basePath string) *Handler {
+	return &Handler{Services: services, basePath: basePath}
 }
 
 func (h *Handler) InitRoutes() *fiber.App {
